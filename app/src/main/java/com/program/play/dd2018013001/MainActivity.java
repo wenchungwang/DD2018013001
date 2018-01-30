@@ -2,6 +2,8 @@ package com.program.play.dd2018013001;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -11,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import java.io.IOException;
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
            }
            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MyListener());
     }
-}
+
 class MyListener implements LocationListener {
 
     @Override
@@ -86,6 +91,17 @@ class MyListener implements LocationListener {
 
         float dist = location.distanceTo(loc101);
         Log.d("LOC", "Dist:" + dist);
+        //經緯度 轉地址
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        try {
+            List<Address> mylist = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            Address addr = mylist.get(0);
+            Log.d("LOC", addr.getAddressLine(0));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -102,4 +118,5 @@ class MyListener implements LocationListener {
     public void onProviderDisabled(String s) {
 
     }
+  }
 }
